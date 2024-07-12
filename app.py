@@ -15,3 +15,13 @@ connect_db(app)
 
 toolbar = DebugToolbarExtension(app)
 
+@app.route('/', methods=['GET'])
+def home():
+    return redirect('/register')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+
+@app.route('/login', methods=['GET', 'POST'])
+
+@app.route('/secret', methods=['GET'])
