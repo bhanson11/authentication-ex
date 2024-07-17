@@ -42,8 +42,16 @@ def register():
         return render_template("users/register.html", form=form)
 
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        
 
 # @app.route('/secret', methods=['GET'])
 # def secret():
