@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User
+from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.app_context().push()
@@ -21,7 +22,11 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
+    form = RegisterForm()
+
     if form.validate_on_submit():
+
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
