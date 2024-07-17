@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, session, flash
+from flask import Flask, render_template, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db, db, User
+from models import connect_db, db, User, bcrypt
 from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
@@ -34,6 +34,7 @@ def register():
 
         user = User.register(username, password, first_name, last_name, email)
 
+        db.session.add(user)
         db.session.commit()
         session['username'] = user.username
 
@@ -50,8 +51,17 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
+        user = User.authenticate(username,password)
 
-        
+        if user: 
+            session['username'] = user.username
+            return redirect("/secret")
+        else: 
+            form.username.errors.append()
 
-# @app.route('/secret', methods=['GET'])
-# def secret():
+
+@app.route('/secret', methods=['GET'])
+def secret():
+    if 'username' not in session:
+        return redirect('/login')
+    return "You made it!"
