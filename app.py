@@ -40,7 +40,7 @@ def register():
 
         return redirect("/secret")   
     else:
-        return render_template("users/register.html", form=form)
+        return render_template("register.html", form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
