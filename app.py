@@ -51,14 +51,15 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        user = User.authenticate(username,password)
+        user = User.authenticate(username, password)
 
         if user: 
             session['username'] = user.username
             return redirect("/secret")
         else: 
-            form.username.errors.append()
-
+            form.username.errors.append('Invalid username/password')
+    
+    return render_template("login.html", form=form)
 
 @app.route('/secret', methods=['GET'])
 def secret():
