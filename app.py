@@ -26,6 +26,20 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        email = form.email.data
+
+        user = User.register(username, password, first_name, last_name, email)
+
+        db.session.commit()
+        session['username'] = user.username
+
+        return redirect("/secret")   
+    else:
+        return render_template("users/register.html", form=form)
 
 
 # @app.route('/login', methods=['GET', 'POST'])
