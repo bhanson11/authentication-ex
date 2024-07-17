@@ -21,11 +21,10 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    
+    if form.validate_on_submit():
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
 
-
-@app.route('/secret', methods=['GET'])
-def secret():
+# @app.route('/secret', methods=['GET'])
+# def secret():
