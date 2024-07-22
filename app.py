@@ -22,7 +22,7 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
+    
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -46,6 +46,9 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
+    if "username" in session:
+        return redirect(f"/users/{session['username']}")
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -55,7 +58,7 @@ def login():
 
         if user: 
             session['username'] = user.username
-            return redirect("/secret")
+            return redirect(f"/users/{username}")
         else: 
             form.username.errors.append('Invalid username/password')
     
@@ -66,3 +69,17 @@ def secret():
     if 'username' not in session:
         return redirect('/login')
     return "You made it!"
+
+@app.route('/logout')
+def logout():
+
+    session.pop("username")
+    return redirect("/login")
+
+@app.route('/users/<username>')
+def show_user(username):
+    """user page for logged-in-users"""
+
+    user = User.query.get(username)
+    
+    return render_template("users/show.html", user=user)
