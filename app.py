@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, session, url_for
+from flask import Flask, render_template, redirect, session, url_for, flash
 from models import connect_db, db, User, bcrypt
 from forms import RegisterForm, LoginForm
 from functools import wraps
@@ -46,6 +46,7 @@ def register():
         db.session.commit()
         session['username'] = user.username
 
+        flash(f'{ username } registered!')
         return redirect("/login")   
     else:
         return render_template("register.html", form=form)
@@ -77,7 +78,8 @@ def login():
 def logout():
 
     session.pop("username")
-    return redirect("/login")
+    flash(f'See you next time!')
+    return redirect(url_for('login'))
 
 @app.route('/users/<username>')
 @login_required
@@ -87,6 +89,7 @@ def show_user(username):
     user = User.query.get(username)
 
     if 'username' not in session or username != session['username']:
+        flash(f'Not authorized')
         return redirect('/login')
     
     return render_template("users/show.html", user=user)
@@ -98,13 +101,13 @@ def remove_user(username):
     user = User.query.get(username)
 
     if 'username' in session != session['username']:
+        flash(f'Unauthorized')
         raise Exception("Unauthorized")
     
-    db.User.delete(user)
-    session.pop("username")
-    db.session.commit()
-    
-
+    else:
+        db.session.delete(user)
+        session.pop("username")
+        db.session.commit()
 
 # @app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
 # @login_required
