@@ -38,7 +38,7 @@ def register():
         db.session.commit()
         session['username'] = user.username
 
-        return redirect("/secret")   
+        return redirect("/login")   
     else:
         return render_template("register.html", form=form)
 
@@ -64,12 +64,6 @@ def login():
     
     return render_template("login.html", form=form)
 
-@app.route('/secret', methods=['GET'])
-def secret():
-    if 'username' not in session:
-        return redirect('/login')
-    return "You made it!"
-
 @app.route('/logout')
 def logout():
 
@@ -81,5 +75,8 @@ def show_user(username):
     """user page for logged-in-users"""
 
     user = User.query.get(username)
+
+    if 'username' not in session:
+        return redirect('/login')
     
     return render_template("users/show.html", user=user)
