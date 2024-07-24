@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, session, url_for, flash
 from models import connect_db, db, User, bcrypt
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, FeedbackForm
 from functools import wraps
 
 app = Flask(__name__)
