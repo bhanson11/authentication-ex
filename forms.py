@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, Length, Email
 
 class RegisterForm(FlaskForm):
+    """register form for new user"""
     username = StringField('Username', validators=[InputRequired(), Length(max=20)])
     password = PasswordField('Password', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired(), Email(), Length(max=50)])
@@ -11,6 +12,12 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Regsiter')
 
 class LoginForm(FlaskForm):
+    """login form"""
     username = StringField('Username', validators=[InputRequired(), Length(max=20)])
     password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Login')
+
+class FeedbackForm(FlaskForm):
+    """ add feedback form"""
+    title = StringField("Title", validators=[InputRequired(), Length(max=100)])
+    content = StringField("Content", validators=[InputRequired()])

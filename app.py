@@ -97,22 +97,24 @@ def show_user(username):
 @app.route('/users/<username>/delete', methods=['POST'])
 @login_required
 def remove_user(username):
-    
-    user = User.query.get(username)
 
     if 'username' in session != session['username']:
         flash(f'Unauthorized')
         raise Exception("Unauthorized")
     
-    else:
-        db.session.delete(user)
-        session.pop("username")
-        db.session.commit()
+    user = User.query.get(username)
+    db.session.delete(user)
+    db.session.commit()
+    session.pop("username")
 
-# @app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
-# @login_required
-# def add_feedback():
-#     """GET to display form to add feedback and POST to add a new piece of feedback and redirect to users/<username> -- only allow user who is logged in to add feedback"""
+    return redirect('/login')
+
+@app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
+@login_required
+def add_feedback(username):
+    """GET to display form to add feedback and POST to add a new piece of feedback and redirect to users/<username> -- only allow user who is logged in to add feedback"""
+    
+    form = FeedbackForm()
     
 # @app.route('/feedback/<feedback-id>/update', methods=['GET', 'POST'])
 # @login_required
