@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, session, url_for, flash
-from models import connect_db, db, User, bcrypt
+from models import connect_db, db, User, bcrypt, Feedback
 from forms import RegisterForm, LoginForm, FeedbackForm
 from functools import wraps
 
@@ -115,6 +115,20 @@ def add_feedback(username):
     """GET to display form to add feedback and POST to add a new piece of feedback and redirect to users/<username> -- only allow user who is logged in to add feedback"""
     
     form = FeedbackForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+
+        feedback = Feedback(title=title, content=content, username=username)
+
+        db.session.add(feedback)
+        db.session.commit()
+
+        return redirect(f"/users/{feedback.username}")
+    
+    else:
+        return render_template("feedback/new.html", form=form)
     
 # @app.route('/feedback/<feedback-id>/update', methods=['GET', 'POST'])
 # @login_required
