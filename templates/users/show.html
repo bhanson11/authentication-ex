@@ -7,10 +7,13 @@
 
 <div class="row">
     <div class="mt-5">
-        <h2>User Profile</h2>
-        <p class="mt-4">{{ user.first_name }} {{ user.last_name }}</p>
-        <p>{{ user.username }}</p>
-        <p>{{ user.email }}</p>
+        <h1>User Profile</h1> 
+        <h3 class="mt-4">{{ user.first_name }} {{ user.last_name }}</h3> 
+        <h5 class="mt-4">{{ user.username }}</h5> 
+        <h5 class="mt-2">{{ user.email }}</h5> 
+    </div>
+    <div class="mt-4">
+        <a href="/logout" class="btn btn-info">Logout</a>
     </div>
 </div>
 
