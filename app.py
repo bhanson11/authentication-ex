@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, session, url_for, flash
 from models import connect_db, db, User, bcrypt, Feedback
-from forms import RegisterForm, LoginForm, FeedbackForm
+from forms import RegisterForm, LoginForm, FeedbackForm, DeleteForm
 from functools import wraps
 
 app = Flask(__name__)
@@ -171,3 +171,9 @@ def delete_feedback(feedback_id):
         return redirect(url_for('home'))  # Redirect to a safer page
     
     form = DeleteForm()
+
+    if form.validate_on_submit():
+        db.session.delete(feedback)
+        db.session.commit()
+
+    return redirect(f"/users/{feedback.username}")
