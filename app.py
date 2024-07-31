@@ -91,8 +91,8 @@ def show_user(username):
     if 'username' not in session or username != session['username']:
         flash(f'Not authorized')
         return redirect('/login')
-    
-    return render_template("users/show.html", user=user)
+    form = FeedbackForm()
+    return render_template("users/show.html", user=user, form=form)
 
 @app.route('/users/<username>/delete', methods=['POST'])
 @login_required
@@ -109,16 +109,22 @@ def remove_user(username):
 
     return redirect('/login')
 
-@app.route('/users/<username>/feedback/add', methods=['GET', 'POST'])
+@app.route('/users/<username>/feedback/new', methods=['GET', 'POST'])
 @login_required
-def add_feedback(username):
+def new_feedback(username):
     """GET to display form to add feedback and POST to add a new piece of feedback and redirect to users/<username> -- only allow user who is logged in to add feedback"""
+    
+    # Check if the logged-in user matches the username in the URL
+    if session.get('username') != username:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('home'))  # Redirect to a safer page
     
     form = FeedbackForm()
 
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
+        username=username
 
         feedback = Feedback(title=title, content=content, username=username)
 
@@ -128,14 +134,34 @@ def add_feedback(username):
         return redirect(f"/users/{feedback.username}")
     
     else:
-        return render_template("feedback/new.html", form=form)
+        return render_template("feedback/new.html", username=username, form=form)
     
-# @app.route('/feedback/<feedback-id>/update', methods=['GET', 'POST'])
-# @login_required
-# def update_feedback():
-#     """Make sure that only the user who has written that feedback can update it."""
+@app.route('/feedback/<int:feedback_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_feedback(feedback_id):
 
-# @app.route('/feedback/<feedback-id>/delete', methods=['POST'])
-# @login_required
-# def delete_feedback():
-#     """Make sure that only the user who has written that feedback can delete it."""
+    feedback = Feedback.query.get(feedback_id)
+    """Make sure that only the user who has written that feedback can update it."""
+    # Check if logged-in user matches username in URL otherwise flash no permissions message and redirect
+    if 'username' not in session or feedback.username != session['username']: 
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('home'))  # Redirect to a safer page
+    
+    form = FeedbackForm(obj=feedback)
+
+    if form.validate_on_submit():
+        feedback.title = form.title.data
+        feedback.content = form.content.data
+
+        db.session.commit()
+
+        return redirect(f"users/{feedback.username}")
+    
+    return render_template("/feedback/edit.html", form=form, feedback=feedback)
+
+@app.route('/feedback/<int:feedback_id>/delete', methods=['POST'])
+@login_required
+def delete_feedback(feedback_id):
+    """Make sure that only the user who has written that feedback can delete it."""
+
+    feedback = Feedback.query.get(feedback_id)
