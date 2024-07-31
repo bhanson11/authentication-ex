@@ -155,7 +155,7 @@ def update_feedback(feedback_id):
 
         db.session.commit()
 
-        return redirect(f"users/{feedback.username}")
+        return redirect(f"/users/{feedback.username}")
     
     return render_template("/feedback/edit.html", form=form, feedback=feedback)
 
