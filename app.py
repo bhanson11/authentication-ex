@@ -165,3 +165,9 @@ def delete_feedback(feedback_id):
     """Make sure that only the user who has written that feedback can delete it."""
 
     feedback = Feedback.query.get(feedback_id)
+
+    if 'username' not in session or feedback.username != session['username']: 
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('home'))  # Redirect to a safer page
+    
+    form = DeleteForm()
