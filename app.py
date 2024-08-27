@@ -98,9 +98,9 @@ def show_user(username):
 @login_required
 def remove_user(username):
 
-    if 'username' in session != session['username']:
-        flash(f'Unauthorized')
-        raise Exception("Unauthorized")
+    if 'username' not in session or username != session['username']:
+        flash(f'Not authorized')
+        return redirect('/login')
     
     user = User.query.get(username)
     db.session.delete(user)
